@@ -46,7 +46,6 @@ class NewPost(webapp2.RequestHandler):
             b = Blog(title=title, blog_content=blog_content)
             b.put()
             blog_id = str(b.key().id())
-            #b.get_by_id()
 
             self.redirect("/blog/" + blog_id)
         else:
@@ -75,7 +74,13 @@ class ViewPostHandler(webapp2.RequestHandler):
 
     def get(self, id):
         int_id = int(id)
-        self.render_IndivBlog(int_id)
+        blog_verification = Blog.get_by_id(int_id)
+
+        if not blog_verification:
+            self.response.write("Error: 404 That blog does not exist :(")
+
+        else:
+            self.render_IndivBlog(int_id)
 
 app = webapp2.WSGIApplication([
     ('/', NewPost),
